@@ -9,7 +9,10 @@ import (
 	"path/filepath"
 	"os"
 	"log"
-	//"encoding/json"
+	"os/exec"
+	"bytes"
+	//"strings"
+	"encoding/json"
 )
 
 var (
@@ -59,9 +62,9 @@ func listUsers(response http.ResponseWriter, req *http.Request) {
 	//fmt.Fprintf(response, "Welcome, %s!", req.URL.Path)
 	currentDir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	data, _ := ioutil.ReadFile(currentDir+"/users.json")
-	//js, _ := json.Marshal(data)
-	fmt.Printf("%s", currentDir)
-	fmt.Fprintf(response, "%s" , data)
+	js, _ := json.Marshal(data)
+	log.Printf("%s", currentDir)
+	fmt.Fprintf(response, "%s" , js)
 
 	flag.Parse()
     requestHandler("https://cmsweb-testbed.cern.ch/crabserver/preprod/filetransfers",
@@ -69,7 +72,21 @@ func listUsers(response http.ResponseWriter, req *http.Request) {
 				   "GET", *certFile, *keyFile)
 }
 
+func ftsSubmit(response http.ResponseWriter, req *http.Request) {
+	cmd := exec.Command("ls","-altr")
+	//cmd.Stdin = strings.NewReader("some input")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("%s", out.String())
+	fmt.Fprintf(response, "%s", out.String())
+}
+
 func main() {
+	http.HandleFunc("/submit", ftsSubmit)
 	http.HandleFunc("/listUsers", listUsers)
 	http.ListenAndServe(":8000", nil)
 }
