@@ -69,8 +69,6 @@ func listUsers(response http.ResponseWriter, req *http.Request) {
 				   "GET", *certFile, *keyFile)
 }
 
-}
-
 func main() {
 	http.HandleFunc("/listUsers", listUsers)
 	http.ListenAndServe(":8000", nil)
