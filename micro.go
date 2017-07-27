@@ -12,7 +12,7 @@ import (
 	"os/exec"
 	"bytes"
 	//"strings"
-	"encoding/json"
+	//"encoding/json"
 )
 
 var (
@@ -62,14 +62,10 @@ func listUsers(response http.ResponseWriter, req *http.Request) {
 	//fmt.Fprintf(response, "Welcome, %s!", req.URL.Path)
 	currentDir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	data, _ := ioutil.ReadFile(currentDir+"/users.json")
-	js, _ := json.Marshal(data)
+	//js, _ := json.Marshal(data)
 	log.Printf("%s", currentDir)
-	fmt.Fprintf(response, "%s" , js)
+	fmt.Fprintf(response, "%s" , data )
 
-	flag.Parse()
-    requestHandler("https://cmsweb-testbed.cern.ch/crabserver/preprod/filetransfers",
-				   "?subresource=acquiredTransfers&asoworker=asodciangot1&grouping=0", 
-				   "GET", *certFile, *keyFile)
 }
 
 func ftsSubmit(response http.ResponseWriter, req *http.Request) {
@@ -83,6 +79,11 @@ func ftsSubmit(response http.ResponseWriter, req *http.Request) {
 	}
 	log.Printf("%s", out.String())
 	fmt.Fprintf(response, "%s", out.String())
+
+	flag.Parse()
+    requestHandler("https://cmsweb-testbed.cern.ch/crabserver/preprod/filetransfers",
+				   "?subresource=acquiredTransfers&asoworker=asodciangot1&grouping=0", 
+				   "GET", *certFile, *keyFile)
 }
 
 func main() {
